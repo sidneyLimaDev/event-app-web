@@ -1,7 +1,13 @@
+import { CarouselBanner } from "@/components/CarouselBanner";
+
 export default function Home() {
   return (
-    <main>
-      <h1>teste</h1>
-    </main>
+    <>
+      <section className="bg-primary-50">
+        <div className="wrapper py-10">
+          <CarouselBanner />
+        </div>
+      </section>
+    </>
   );
 }
