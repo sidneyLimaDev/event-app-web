@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
+import { ClerkProvider } from "@clerk/nextjs";
+
 import "./globals.css";
 
 const poppins = Poppins({
@@ -10,7 +12,7 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: "Ticket",
-  description: "Ticket plataform para gerencimento de eventos",
+  description: "Ticket plataforma para gerencimento de eventos",
   icons: {
     icon: "/favicon.ico",
   },
@@ -22,8 +24,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${poppins.className} antialiased`}>{children}</body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body className={`${poppins.className} antialiased`}>{children}</body>
+      </html>
+    </ClerkProvider>
   );
 }
