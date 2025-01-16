@@ -8,7 +8,7 @@ import NavMobile from "./NavMobile";
 const Header = () => {
   return (
     <header className="w-full border-b px-4">
-      <div className="wrapper flex items-center justify-between">
+      <div className=" flex items-center justify-between">
         <Link href={"/"} className="w-36">
           <Image
             src="/assets/images/logo.svg"
