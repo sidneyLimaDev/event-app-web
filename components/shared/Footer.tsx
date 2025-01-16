@@ -4,7 +4,7 @@ import Link from "next/link";
 const Footer = () => {
   return (
     <footer className="border-t">
-      <div className="items-center wrapper flex flex-col justify-center gap-4 p-5 md:justify-between md:flex-row">
+      <div className="items-center flex flex-col justify-center gap-4 p-5 md:justify-between md:flex-row">
         <Link href="/">
           <Image
             src="/assets/images/logo.svg"
