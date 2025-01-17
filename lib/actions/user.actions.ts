@@ -1,86 +1,84 @@
-"use server";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// user.action.ts
+import { PrismaClient } from "@prisma/client";
+import { CreateUserParams, UpdateUserParams } from "@/types/index";
 
-import { revalidatePath } from "next/cache";
+const prisma = new PrismaClient();
 
-import { connectToDatabase } from "@/lib/database";
-import User from "@/lib/database/models/user.model";
-import Order from "@/lib/database/models/order.model";
-import Event from "@/lib/database/models/event.model";
-import { handleError } from "@/lib/utils";
+// ====== CREATE USER
+export const createUser = async (params: CreateUserParams) => {
+  const { clerkId, firstName, lastName, username, email, photo } = params;
 
-import { CreateUserParams, UpdateUserParams } from "@/types";
-
-export async function createUser(user: CreateUserParams) {
   try {
-    await connectToDatabase();
-
-    const newUser = await User.create(user);
-    return JSON.parse(JSON.stringify(newUser));
-  } catch (error) {
-    handleError(error);
-  }
-}
-
-export async function getUserById(userId: string) {
-  try {
-    await connectToDatabase();
-
-    const user = await User.findById(userId);
-
-    if (!user) throw new Error("User not found");
-    return JSON.parse(JSON.stringify(user));
-  } catch (error) {
-    handleError(error);
-  }
-}
-
-export async function updateUser(clerkId: string, user: UpdateUserParams) {
-  try {
-    await connectToDatabase();
-
-    const updatedUser = await User.findOneAndUpdate({ clerkId }, user, {
-      new: true,
+    const newUser = await prisma.user.create({
+      data: {
+        clerkId,
+        email,
+        username,
+        firstName,
+        lastName,
+        photo,
+      },
     });
 
-    if (!updatedUser) throw new Error("User update failed");
-    return JSON.parse(JSON.stringify(updatedUser));
+    return newUser;
   } catch (error) {
-    handleError(error);
+    throw new Error(`Error creating user: ${(error as any).message}`);
   }
-}
+};
 
-export async function deleteUser(clerkId: string) {
+// ====== GET USER BY ID
+export const getUserById = async (clerkId: string) => {
   try {
-    await connectToDatabase();
+    const user = await prisma.user.findUnique({
+      where: { clerkId },
+    });
 
-    // Find user to delete
-    const userToDelete = await User.findOne({ clerkId });
-
-    if (!userToDelete) {
+    if (!user) {
       throw new Error("User not found");
     }
 
-    // Unlink relationships
-    await Promise.all([
-      // Update the 'events' collection to remove references to the user
-      Event.updateMany(
-        { _id: { $in: userToDelete.events } },
-        { $pull: { organizer: userToDelete._id } }
-      ),
-
-      // Update the 'orders' collection to remove references to the user
-      Order.updateMany(
-        { _id: { $in: userToDelete.orders } },
-        { $unset: { buyer: 1 } }
-      ),
-    ]);
-
-    // Delete user
-    const deletedUser = await User.findByIdAndDelete(userToDelete._id);
-    revalidatePath("/");
-
-    return deletedUser ? JSON.parse(JSON.stringify(deletedUser)) : null;
+    return user;
   } catch (error) {
-    handleError(error);
+    throw new Error(`Error fetching user: ${(error as any).message}`);
   }
-}
+};
+
+// ====== UPDATE USER
+export const updateUser = async (clerkId: string, params: UpdateUserParams) => {
+  const { firstName, lastName, username, photo } = params;
+
+  try {
+    const updatedUser = await prisma.user.update({
+      where: { clerkId },
+      data: {
+        firstName,
+        lastName,
+        username,
+        photo,
+      },
+    });
+
+    return updatedUser;
+  } catch (error) {
+    throw new Error(`Error updating user: ${(error as any).message}`);
+  }
+};
+
+// ====== DELETE USER
+export const deleteUser = async (clerkId: string) => {
+  try {
+    const existingUser = await prisma.user.findUnique({ where: { clerkId } });
+    if (!existingUser) {
+      console.warn(`User not found for deletion`);
+      return null;
+    }
+    const deletedUser = await prisma.user.delete({
+      where: { clerkId },
+    });
+
+    return deletedUser;
+  } catch (error) {
+    throw new Error(`Error deleting user: ${(error as any).message}`);
+  }
+};
