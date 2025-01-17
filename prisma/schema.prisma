@@ -9,18 +9,65 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
+model User {
+  clerkId   String  @id @unique                // ID único gerado automaticamente
+  email     String  @unique                    // E-mail do usuário
+  username  String?                            // Nome de usuário (opcional)
+  firstName String                             // Primeiro nome
+  lastName  String                             // Sobrenome
+  photo     String?                            // URL da foto (opcional)
+  orders    Order[]                            // Pedidos feitos pelo usuário
 
-model User{
-  clerkId String @id @unique
-  email String @unique
-  username String
-  firstName String 
-  lastName String
-  photo String?
+  // Relacionamentos
+  Event Event[]
 }
 
+model Category {
+  id   String @id @unique                      // ID único gerado automaticamente
+  name String @unique                          // Nome da categoria
+
+  // Relacionamentos
+  Event Event[]
+}
+
+model Event {
+  id            String   @id @default(cuid()) // ID único gerado automaticamente
+  title         String                        // Título do evento (obrigatório)
+  description   String?                       // Descrição do evento (opcional)
+  location      String?                       // Localização (opcional)
+  createdAt     DateTime @default(now())      // Data de criação
+  imageUrl      String                        // URL da imagem (obrigatório)
+  startDateTime DateTime @default(now())      // Data e hora de início
+  endDateTime   DateTime @default(now())      // Data e hora de término
+  price         String                        // Preço do evento
+  tickets       Int                           // Número de ingressos disponíveis
+  maxTickets    Int                           // Número máximo de ingressos por pessoa
+  isFree        Boolean  @default(false)      // Indica se o evento é gratuito
+  url           String?                       // URL do evento (opcional)
+  categoryId    String                        // ID da categoria
+  organizerId   String                        // ID do organizador
+
+  // Relacionamentos
+  category  Category @relation(fields: [categoryId], references: [id])
+  organizer User     @relation(fields: [organizerId], references: [clerkId])
+
+  Order Order[]
+}
+
+model Order {
+  id          String   @id @default(cuid())    // ID único gerado automaticamente
+  createdAt   DateTime @default(now())         // Data de criação
+  stripeId    String   @unique                 // ID único associado ao Stripe
+  totalAmount String?                          // Total do pedido (opcional)
+  eventId     String                           // Relacionado a um evento
+  buyerId     String                           // Relacionado a um comprador                 
+
+  // Relacionamentos
+  event Event @relation(fields: [eventId], references: [id])
+  buyer User  @relation(fields: [buyerId], references: [clerkId])
+}
