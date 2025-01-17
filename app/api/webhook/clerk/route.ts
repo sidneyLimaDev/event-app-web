@@ -65,7 +65,15 @@ export async function POST(req: Request) {
       photo: image_url,
     };
 
-    const newUser = await createUser(user);
+    const newUser = (await createUser(user)) as {
+      _id: string;
+      username: string;
+      clerkId: string;
+      email: string;
+      firstName: string;
+      lastName: string;
+      photo: string | null;
+    };
 
     if (newUser) {
       const client = await clerkClient();
