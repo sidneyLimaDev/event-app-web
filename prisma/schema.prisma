@@ -15,7 +15,8 @@ datasource db {
 }
 
 model User {
-  clerkId   String  @id @unique                // ID único gerado automaticamente
+  id        String   @id @default(uuid()) // ID único gerado automaticamente
+  clerkId   String @unique                // ID único gerado automaticamente
   email     String  @unique                    // E-mail do usuário
   username  String?                            // Nome de usuário (opcional)
   firstName String                             // Primeiro nome
@@ -45,8 +46,8 @@ model Event {
   startDateTime DateTime @default(now())      // Data e hora de início
   endDateTime   DateTime @default(now())      // Data e hora de término
   price         String                        // Preço do evento
-  tickets       Int                           // Número de ingressos disponíveis
-  maxTickets    Int                           // Número máximo de ingressos por pessoa
+  tickets       Int?                          // Número de ingressos disponíveis
+  maxTickets    Int?                          // Número máximo de ingressos por pessoa
   isFree        Boolean  @default(false)      // Indica se o evento é gratuito
   url           String?                       // URL do evento (opcional)
   categoryId    String                        // ID da categoria
@@ -54,7 +55,7 @@ model Event {
 
   // Relacionamentos
   category  Category @relation(fields: [categoryId], references: [id])
-  organizer User     @relation(fields: [organizerId], references: [clerkId])
+  organizer User     @relation(fields: [organizerId], references: [id])
 
   Order Order[]
 }

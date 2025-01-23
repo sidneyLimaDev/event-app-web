@@ -28,10 +28,10 @@ export const createUser = async (params: CreateUserParams) => {
 };
 
 // ====== GET USER BY ID
-export const getUserById = async (clerkId: string) => {
+export const getUserById = async (id: string) => {
   try {
     const user = await prisma.user.findUnique({
-      where: { clerkId },
+      where: { id },
     });
 
     if (!user) {

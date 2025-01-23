@@ -1,5 +1,6 @@
 // ====== USER PARAMS
 export type CreateUserParams = {
+  id: string;
   clerkId: string;
   firstName: string;
   lastName: string;
@@ -26,6 +27,8 @@ export type CreateEventParams = {
     startDateTime: Date;
     endDateTime: Date;
     categoryId: string;
+    tickets: number;
+    maxTickets: number;
     price: string;
     isFree: boolean;
     url: string;

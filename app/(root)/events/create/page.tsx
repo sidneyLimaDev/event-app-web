@@ -6,6 +6,8 @@ const CreateEvent = async () => {
   const { sessionClaims } = await auth();
 
   const userId = sessionClaims?.userId as string;
+
+  console.log(userId);
   return (
     <>
       <section className="py-5 md:py-10">

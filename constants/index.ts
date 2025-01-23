@@ -15,6 +15,6 @@ export const eventDefaultValues = {
   price: "",
   isFree: false,
   url: "",
-  ticket: 1,
-  maxTicket: 1,
+  tickets: 1,
+  maxTickets: 1,
 };
