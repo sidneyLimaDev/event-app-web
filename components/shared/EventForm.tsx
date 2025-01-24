@@ -22,20 +22,30 @@ import { Calendar, DollarSign, Link, MapPin } from "lucide-react";
 import { DatePicker } from "./DatePicker";
 import { Checkbox } from "../ui/checkbox";
 import { useRouter } from "next/navigation";
-import { createEvent } from "@/lib/actions/event.actions";
+import { createEvent, updateEvent } from "@/lib/actions/event.actions";
 import { generateReactHelpers } from "@uploadthing/react";
 import { OurFileRouter } from "@/app/api/uploadthing/core";
+import { Event } from "@prisma/client";
 
 const { useUploadThing } = generateReactHelpers<OurFileRouter>();
 type EventFormProps = {
   userId: string;
   type: "Create" | "Update";
+  event?: Event;
+  eventId?: string;
 };
 
-const EventForm = ({ userId, type }: EventFormProps) => {
+const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
   console.log("teste");
   const [files, setFiles] = useState<File[]>([]);
-  const initialValues = eventDefaultValues;
+  const initialValues =
+    event && type === "Update"
+      ? {
+          ...event,
+          startDateTime: new Date(event.startDateTime),
+          endDateTime: new Date(event.endDateTime),
+        }
+      : eventDefaultValues;
   const router = useRouter();
 
   const { startUpload, isUploading } = useUploadThing("imageUploader");
@@ -46,7 +56,7 @@ const EventForm = ({ userId, type }: EventFormProps) => {
   });
 
   async function onSubmit(values: z.infer<typeof eventFormSchema>) {
-    console.log(values);
+    console.log("initalValues", initialValues);
 
     let uploadedImageUrl = values.imageUrl;
 
@@ -68,6 +78,23 @@ const EventForm = ({ userId, type }: EventFormProps) => {
         if (newEvent) {
           form.reset();
           router.push(`/events/${newEvent.id}`);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    if (type === "Update") {
+      try {
+        const updatedEvent = await updateEvent({
+          event: { ...values, imageUrl: uploadedImageUrl, id: eventId },
+          userId,
+          path: `/events/${eventId}`,
+        });
+
+        if (updatedEvent) {
+          form.reset();
+          router.push(`/events/${updatedEvent.id}`);
         }
       } catch (error) {
         console.log(error);
@@ -163,7 +190,7 @@ const EventForm = ({ userId, type }: EventFormProps) => {
           <FormField
             control={form.control}
             name="startDateTime"
-            render={() => (
+            render={({ field }) => (
               <FormItem className="w-full">
                 <FormControl>
                   <div className="flex items-center gap-2 overflow-hidden w-full">
@@ -171,7 +198,7 @@ const EventForm = ({ userId, type }: EventFormProps) => {
                     <p className="ml-3 whitespace-nowrap text-gray-600">
                       Data do inicio:
                     </p>
-                    <DatePicker />
+                    <DatePicker value={field.value} onChange={field.onChange} />
                   </div>
                 </FormControl>
                 <FormMessage />
@@ -181,7 +208,7 @@ const EventForm = ({ userId, type }: EventFormProps) => {
           <FormField
             control={form.control}
             name="endDateTime"
-            render={() => (
+            render={({ field }) => (
               <FormItem className="w-full">
                 <FormControl>
                   <div className="flex items-center gap-2 overflow-hidden w-full">
@@ -189,7 +216,7 @@ const EventForm = ({ userId, type }: EventFormProps) => {
                     <p className="ml-3 whitespace-nowrap text-gray-600">
                       Data de Termino:
                     </p>
-                    <DatePicker />
+                    <DatePicker value={field.value} onChange={field.onChange} />
                   </div>
                 </FormControl>
                 <FormMessage />
@@ -271,6 +298,8 @@ const EventForm = ({ userId, type }: EventFormProps) => {
                       type=""
                       placeholder="Quantos tickets disponiveis?"
                       {...field}
+                      value={field.value || ""}
+                      onChange={(e) => field.onChange(e.target.valueAsNumber)}
                     />
                   </div>
                 </FormControl>
@@ -289,6 +318,7 @@ const EventForm = ({ userId, type }: EventFormProps) => {
                       type="number"
                       placeholder="Quantos tickets disponiveis?"
                       {...field}
+                      onChange={(e) => field.onChange(Number(e.target.value))}
                     />
                   </div>
                 </FormControl>

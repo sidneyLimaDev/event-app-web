@@ -3,7 +3,13 @@
 import { PrismaClient } from "@prisma/client";
 import { handleError } from "../utils";
 
-import { CreateEventParams } from "@/types";
+import {
+  CreateEventParams,
+  DeleteEventParams,
+  GetAllEventsParams,
+  GetRelatedEventsByCategoryParams,
+  UpdateEventParams,
+} from "@/types";
 import { revalidatePath } from "next/cache";
 
 const prisma = new PrismaClient();
@@ -57,6 +63,176 @@ export const getEventById = async (eventId: string) => {
   } catch (error) {
     console.log(JSON.stringify(error));
 
+    handleError(error);
+  }
+};
+
+export const updateEvent = async ({
+  userId,
+  event,
+  path,
+}: UpdateEventParams) => {
+  try {
+    const eventToUpdate = await prisma.event.findUnique({
+      where: { id: event.id },
+      select: { organizerId: true },
+    });
+
+    if (!eventToUpdate || eventToUpdate.organizerId !== userId) {
+      throw new Error("Unauthorized or event not found");
+    }
+
+    const updatedEvent = await prisma.event.update({
+      where: { id: event.id },
+      data: {
+        ...event,
+        categoryId: event.categoryId,
+      },
+    });
+
+    revalidatePath(path);
+
+    return JSON.parse(JSON.stringify(updatedEvent));
+  } catch (error) {
+    console.log(JSON.stringify(error));
+
+    handleError(error);
+  }
+};
+
+export async function getAllEvents({
+  query,
+  limit = 6,
+  page,
+  category,
+}: GetAllEventsParams) {
+  try {
+    const titleCondition = query
+      ? {
+          title: {
+            contains: query,
+            mode: "insensitive",
+          },
+        }
+      : {};
+
+    const categoryCondition = category
+      ? await prisma.category.findUnique({
+          where: { name: category },
+        })
+      : null;
+
+    const conditions = {
+      AND: [
+        titleCondition,
+        categoryCondition ? { categoryId: categoryCondition.id } : {},
+      ],
+    };
+
+    const skipAmount = (Number(page) - 1) * limit;
+
+    const events = await prisma.event.findMany({
+      where: conditions,
+      orderBy: {
+        createdAt: "desc",
+      },
+      skip: skipAmount,
+      take: limit,
+      include: {
+        category: {
+          select: {
+            name: true,
+          },
+        },
+        organizer: {
+          select: {
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
+    });
+
+    const eventsCount = await prisma.event.count({
+      where: conditions,
+    });
+
+    return {
+      data: JSON.parse(JSON.stringify(events)),
+      totalPages: Math.ceil(eventsCount / limit),
+    };
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+export const deleteEvent = async ({ eventId, path }: DeleteEventParams) => {
+  try {
+    const deletedEvent = await prisma.event.delete({
+      where: { id: eventId },
+    });
+
+    if (deletedEvent) revalidatePath(path);
+
+    return JSON.parse(JSON.stringify(deletedEvent));
+  } catch (error) {
+    console.log(JSON.stringify(error));
+
+    handleError(error);
+  }
+};
+
+export const getRelatedEventsByCategory = async ({
+  categoryId,
+  eventId,
+  limit = 3,
+  page = 1,
+}: GetRelatedEventsByCategoryParams) => {
+  try {
+    const skipAmount = (Number(page) - 1) * limit;
+
+    const events = await prisma.event.findMany({
+      where: {
+        categoryId: categoryId,
+        NOT: {
+          id: eventId,
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      skip: skipAmount,
+      take: limit,
+      include: {
+        category: {
+          select: {
+            name: true,
+          },
+        },
+        organizer: {
+          select: {
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
+    });
+
+    const eventsCount = await prisma.event.count({
+      where: {
+        categoryId: categoryId,
+        NOT: {
+          id: eventId,
+        },
+      },
+    });
+
+    return {
+      data: JSON.parse(JSON.stringify(events)),
+      totalPages: Math.ceil(eventsCount / limit),
+    };
+  } catch (error) {
+    console.log(JSON.stringify(error));
     handleError(error);
   }
 };

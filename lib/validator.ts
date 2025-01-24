@@ -10,8 +10,12 @@ export const eventFormSchema = z.object({
     .min(3, "A localização tem que ter mais que 3 caracteres")
     .max(100, "A localização tem que ter menos que 100 caracteres"),
   imageUrl: z.string(),
-  startDateTime: z.date(),
-  endDateTime: z.date(),
+  startDateTime: z.date().refine((date) => date > new Date(), {
+    message: "A data de início deve ser no futuro.",
+  }),
+  endDateTime: z.date().refine((date) => date > new Date(), {
+    message: "A data de término deve ser no futuro.",
+  }),
   categoryId: z.string(),
   price: z.string(),
   isFree: z.boolean(),
