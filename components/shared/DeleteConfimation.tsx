@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 import { deleteEvent } from "@/lib/actions/event.actions";
-import { Delete, Trash } from "lucide-react";
+import { Trash } from "lucide-react";
 
 export const DeleteConfirmation = ({ eventId }: { eventId: string }) => {
   const pathname = usePathname();
