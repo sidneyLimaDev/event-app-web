@@ -3,21 +3,24 @@ import {
   getEventById,
   getRelatedEventsByCategory,
 } from "@/lib/actions/event.actions";
-import { SearchParamProps } from "@/types";
+/* import { SearchParamProps } from "@/types"; */
 import { formatDate } from "date-fns";
 import { Calendar, MapPin } from "lucide-react";
 import Image from "next/image";
 
 const EventDetails = async ({
-  params: { id },
+  params,
   searchParams,
-}: SearchParamProps) => {
-  const event = await getEventById(id);
+}: {
+  params: { id: string };
+  searchParams: { page?: string | string[] };
+}) => {
+  const event = await getEventById(params.id);
 
   const relatedEvents = await getRelatedEventsByCategory({
     categoryId: event.category.id,
     eventId: event.id,
-    page: searchParams.page as string,
+    page: searchParams.page ? String(searchParams.page) : "1",
   });
 
   return (
