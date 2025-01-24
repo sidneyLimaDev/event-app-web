@@ -1,6 +1,6 @@
 "use server";
 
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { handleError } from "../utils";
 
 import {
@@ -111,7 +111,7 @@ export async function getAllEvents({
       ? {
           title: {
             contains: query,
-            mode: "insensitive",
+            mode: Prisma.QueryMode.insensitive,
           },
         }
       : {};
@@ -122,7 +122,7 @@ export async function getAllEvents({
         })
       : null;
 
-    const conditions = {
+    const conditions: Prisma.EventWhereInput = {
       AND: [
         titleCondition,
         categoryCondition ? { categoryId: categoryCondition.id } : {},

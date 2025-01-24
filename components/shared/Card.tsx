@@ -8,7 +8,7 @@ import React from "react";
 import { DeleteConfirmation } from "./DeleteConfimation";
 
 type CardProps = {
-  event: Event;
+  event: Event & { category: { name: string; id: string } }; // Incluindo category diretamente no tipo
   hasOrderLink?: boolean;
   hidePrice?: boolean;
 };

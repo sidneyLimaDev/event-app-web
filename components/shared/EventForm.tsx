@@ -44,6 +44,11 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
           ...event,
           startDateTime: new Date(event.startDateTime),
           endDateTime: new Date(event.endDateTime),
+          description: event.description ?? "",
+          location: event.location ?? "",
+          tickets: event.tickets ?? undefined,
+          maxTickets: event.tickets ?? undefined,
+          url: event.url ?? undefined,
         }
       : eventDefaultValues;
   const router = useRouter();
@@ -86,8 +91,19 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
 
     if (type === "Update") {
       try {
+        // Verifique se o eventId existe antes de tentar atualizar
+        if (!eventId) {
+          throw new Error("Event ID is required for updating.");
+        }
+
+        // Prepare os dados para atualização, garantindo que o `description` seja sempre uma string
         const updatedEvent = await updateEvent({
-          event: { ...values, imageUrl: uploadedImageUrl, id: eventId },
+          event: {
+            ...values,
+            imageUrl: uploadedImageUrl,
+            id: eventId,
+            description: values.description ?? "", // Garantir que description não seja undefined
+          },
           userId,
           path: `/events/${eventId}`,
         });
@@ -97,7 +113,7 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
           router.push(`/events/${updatedEvent.id}`);
         }
       } catch (error) {
-        console.log(error);
+        console.error("Error updating event:", error);
       }
     }
   }

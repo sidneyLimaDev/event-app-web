@@ -3,7 +3,7 @@ import Card from "./Card";
 import { Event } from "@prisma/client";
 
 type CollectionProps = {
-  data: Event[];
+  data: (Event & { category: { name: string; id: string } })[];
   emptyTitle: string;
   emptyStateSubtext: string;
   limit: number;

@@ -3,22 +3,34 @@ import {
   getEventById,
   getRelatedEventsByCategory,
 } from "@/lib/actions/event.actions";
-import { SearchParamProps } from "@/types";
+/* import { SearchParamProps } from "@/types"; */
 import { formatDate } from "date-fns";
 import { Calendar, MapPin } from "lucide-react";
 import Image from "next/image";
 
+type Params = Promise<{ id: string }>;
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
+
 const EventDetails = async ({
-  params: { id },
+  params,
   searchParams,
-}: SearchParamProps) => {
+}: {
+  params: Params;
+  searchParams: SearchParams;
+}) => {
+  const { id } = await params;
+  const { page } = await searchParams;
+
   const event = await getEventById(id);
 
   const relatedEvents = await getRelatedEventsByCategory({
     categoryId: event.category.id,
     eventId: event.id,
-    page: (searchParams.page as string) || "1",
+    page: page as string,
   });
+
+  console.log(event);
+  console.log(event.imageUrl);
 
   return (
     <>
