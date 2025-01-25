@@ -7,6 +7,7 @@ import {
   CreateEventParams,
   DeleteEventParams,
   GetAllEventsParams,
+  GetEventsByUserParams,
   GetRelatedEventsByCategoryParams,
   UpdateEventParams,
 } from "@/types";
@@ -236,3 +237,45 @@ export const getRelatedEventsByCategory = async ({
     handleError(error);
   }
 };
+
+export async function getEventsByUser({
+  userId,
+  limit = 6,
+  page,
+}: GetEventsByUserParams) {
+  try {
+    const skipAmount = (Number(page) - 1) * limit;
+
+    const events = await prisma.event.findMany({
+      where: {
+        organizerId: userId,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      skip: skipAmount,
+      take: limit,
+      include: {
+        category: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+
+    const eventsCount = await prisma.event.count({
+      where: {
+        organizerId: userId,
+      },
+    });
+
+    return {
+      data: JSON.parse(JSON.stringify(events)),
+      totalPages: Math.ceil(eventsCount / limit),
+    };
+  } catch (error) {
+    console.log(JSON.stringify(error));
+    handleError(error);
+  }
+}
