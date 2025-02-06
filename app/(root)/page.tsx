@@ -34,9 +34,9 @@ export default async function Home({ searchParams }: SearchParamProps) {
           emptyTitle="Nenhum evento encontrado"
           emptyStateSubtext="Tente alterar os filtros"
           collectionType="All_Events"
-          limit={6}
+          limit={3}
           page={1}
-          totalPages={2}
+          totalPages={events?.totalPages}
         />
       </section>
     </>

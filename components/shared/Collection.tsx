@@ -1,6 +1,7 @@
 import React from "react";
 import Card from "./Card";
 import { Event } from "@prisma/client";
+import Pagination from "./Pagination";
 
 type CollectionProps = {
   data: (Event & { category: { name: string; id: string } })[];
@@ -17,7 +18,10 @@ const Collection = ({
   data,
   emptyTitle,
   emptyStateSubtext,
+  totalPages = 0,
+  page,
   collectionType,
+  urlParamName,
 }: CollectionProps) => {
   return (
     console.log(collectionType),
@@ -41,6 +45,13 @@ const Collection = ({
                 );
               })}
             </ul>
+            {totalPages > 1 && (
+              <Pagination
+                urlParamName={urlParamName}
+                page={page}
+                totalPages={totalPages}
+              />
+            )}
           </div>
         ) : (
           <div className="flex justify-center flex-col items-center min-h-[200px] w-full gap-3 rounded-[14px] bg-gray-50 py-28 text-center">
