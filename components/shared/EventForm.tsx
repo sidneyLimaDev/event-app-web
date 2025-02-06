@@ -91,18 +91,16 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
 
     if (type === "Update") {
       try {
-        // Verifique se o eventId existe antes de tentar atualizar
         if (!eventId) {
           throw new Error("Event ID is required for updating.");
         }
 
-        // Prepare os dados para atualização, garantindo que o `description` seja sempre uma string
         const updatedEvent = await updateEvent({
           event: {
             ...values,
             imageUrl: uploadedImageUrl,
             id: eventId,
-            description: values.description ?? "", // Garantir que description não seja undefined
+            description: values.description ?? "",
           },
           userId,
           path: `/events/${eventId}`,
