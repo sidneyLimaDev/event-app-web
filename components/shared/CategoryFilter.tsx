@@ -60,15 +60,17 @@ const CategoryFilter = () => {
           Todas as Categorias
         </SelectItem>
 
-        {categories.map((category) => (
-          <SelectItem
-            value={category.name}
-            key={category.id}
-            className="select-item p-regular-14"
-          >
-            {category.name}
-          </SelectItem>
-        ))}
+        {categories
+          .filter((category) => category.name && category.id)
+          .map((category) => (
+            <SelectItem
+              value={category.name}
+              key={category.id}
+              className="select-item p-regular-14"
+            >
+              {category.name}
+            </SelectItem>
+          ))}
       </SelectContent>
     </Select>
   );

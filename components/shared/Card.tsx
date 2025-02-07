@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { Event } from "@prisma/client";
 import { formatDate } from "date-fns";
-import { ArrowBigRight, Edit } from "lucide-react";
+import { ArrowBigRight, Edit, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -21,7 +21,7 @@ const Card = async ({ event, hasOrderLink, hidePrice }: CardProps) => {
 
   /* console.log("Card", event); */
   return (
-    <div className="group relative w-full h-full max-w-[400px] bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg md:min-h-[438px]">
+    <div className="group relative w-full h-full max-w-[400px] bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg md:min-h-[438px] ">
       <Link
         href={`/events/${event.id}`}
         className="flex-center flex-grow bg-gray-50 bg-cover bg-center text-grey-500"
@@ -53,8 +53,12 @@ const Card = async ({ event, hasOrderLink, hidePrice }: CardProps) => {
         </p>
 
         <h3 className="text-lg font-medium">{event.title}</h3>
-        <p className="text-sm from-neutral-400">{event.description}</p>
-        <p className="text-xs from-neutral-400">{event.location}</p>
+        <p className="text-sm from-neutral-400 text-wrap text-ellipsis overflow-hidden line-clamp-2 mb-1">
+          {event.description}
+        </p>
+        <p className="text-xs from-neutral-400 flex items-center text-nowrap text-ellipsis overflow-hidden">
+          <MapPin width={14} height={14} /> {event.location}
+        </p>
         {!hidePrice && (
           <div className="flex gap-2">
             <span className="bg-green-500/10 py-2 px-4 text-green-600 rounded-full">

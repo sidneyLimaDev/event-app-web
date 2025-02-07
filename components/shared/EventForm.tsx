@@ -238,108 +238,120 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
             )}
           />
         </div>
-        <div className="flex flex-col gap-5 md:flex-row">
-          <FormField
-            control={form.control}
-            name="price"
-            render={({ field }) => (
-              <FormItem className="w-full ">
-                <FormControl>
-                  <div className="flex items-center gap-2 overflow-hidden w-full bg-slate-200 p-2">
-                    <DollarSign />
-                    <input
-                      type="number"
-                      placeholder="Preço"
-                      {...field}
-                      className="bg-slate-200 focus:outline-none"
-                    />
-                    <FormField
-                      control={form.control}
-                      name="isFree"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <div className="flex items-center">
-                              <label
-                                htmlFor="isFree"
-                                className="whitespace-nowrap pr-3 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 "
-                              >
-                                Gratuito
-                              </label>
-                              <Checkbox
-                                onCheckedChange={field.onChange}
-                                checked={field.value}
-                                id="isFree"
-                                className="mr-2"
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="url"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormControl>
-                  <div className="flex justify-center items-center gap-2 overflow-hidden w-full">
-                    <Link />
-                    <Input placeholder="URL" {...field} />
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div>
-          <FormField
-            control={form.control}
-            name="tickets"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormControl>
-                  <div className="flex justify-center items-center gap-2 overflow-hidden w-full">
-                    <Input
-                      type=""
-                      placeholder="Quantos tickets disponiveis?"
-                      {...field}
-                      value={field.value || ""}
-                      onChange={(e) => field.onChange(e.target.valueAsNumber)}
-                    />
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="maxTickets"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormControl>
-                  <div className="flex justify-center items-center gap-2 overflow-hidden w-full">
-                    <Input
-                      type="number"
-                      placeholder="Quantos tickets disponiveis?"
-                      {...field}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
-                    />
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <div className="flex flex-col md:flex-row gap-5">
+          <div className="flex flex-col gap-5 flex-1">
+            <FormField
+              control={form.control}
+              name="price"
+              render={({ field }) => (
+                <FormItem className="w-full ">
+                  <FormControl>
+                    <div className="flex items-center gap-2 overflow-hidden ">
+                      <DollarSign />
+                      <div className="flex items-center gap-2 overflow-hidden w-full border-[1px] rounded-full  p-2">
+                        <input
+                          type="number"
+                          placeholder="Preço"
+                          {...field}
+                          className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none "
+                        />
+                        <FormField
+                          control={form.control}
+                          name="isFree"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <div className="flex items-center">
+                                  <label
+                                    htmlFor="isFree"
+                                    className="whitespace-nowrap pr-3 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 "
+                                  >
+                                    Gratuito
+                                  </label>
+                                  <Checkbox
+                                    onCheckedChange={field.onChange}
+                                    checked={field.value}
+                                    id="isFree"
+                                    className="mr-2"
+                                  />
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="url"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormControl>
+                    <div className="flex  justify-center items-center gap-2 overflow-hidden w-full ">
+                      <Link />
+                      <Input
+                        placeholder="URL"
+                        {...field}
+                        className="rounded-full"
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="flex flex-1 flex-col gap-5">
+            <FormField
+              control={form.control}
+              name="tickets"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormControl>
+                    <div className="flex justify-center items-center gap-2 overflow-hidden w-full ">
+                      <span>Qtd maxima por pessoa</span>
+                      <Input
+                        type=""
+                        placeholder="Quantos tickets disponiveis?"
+                        {...field}
+                        value={field.value || ""}
+                        className="rounded-full"
+                        onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="maxTickets"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormControl>
+                    <div className="flex justify-center items-center gap-2 overflow-hidden w-full">
+                      <span>Ingressos disponíveis</span>
+                      <Input
+                        type="number"
+                        placeholder="Quantos tickets disponiveis?"
+                        className="rounded-full"
+                        {...field}
+                        onChange={(e) => field.onChange(Number(e.target.value))}
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
         </div>
         <Button
           type="submit"

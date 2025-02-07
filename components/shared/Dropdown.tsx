@@ -24,7 +24,7 @@ import {
 
 type DropdownProps = {
   value?: string;
-  onChangeHandler?: () => void;
+  onChangeHandler?: (value: string) => void;
 };
 
 const Dropdown = ({ value, onChangeHandler }: DropdownProps) => {
@@ -33,7 +33,7 @@ const Dropdown = ({ value, onChangeHandler }: DropdownProps) => {
   );
   const [newCategory, setNewCategory] = useState("");
 
-  const handlAddCategory = () => {
+  const handleAddCategory = () => {
     createCategory({ categoryName: newCategory }).then((category) => {
       setCategories((prevState) => [...prevState, category]);
     });
@@ -42,15 +42,12 @@ const Dropdown = ({ value, onChangeHandler }: DropdownProps) => {
   useEffect(() => {
     const getCategories = async () => {
       const categoryList = await getAllCategories();
-
-      if (categories) {
+      if (categoryList) {
         setCategories(categoryList);
       }
-      console.log(categoryList);
     };
 
     getCategories();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -66,34 +63,38 @@ const Dropdown = ({ value, onChangeHandler }: DropdownProps) => {
                 {category.name}
               </SelectItem>
             ))}
-          <AlertDialog>
-            <AlertDialogTrigger>Adicionar nova categoria</AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogDescription className="text-center">
-                  Nova categoria
-                </AlertDialogDescription>
-                <AlertDialogDescription>
-                  <Input
-                    type="text"
-                    placeholder="Nome da categoria"
-                    className="w-full"
-                    onChange={(e) => setNewCategory(e.target.value)}
-                  />
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={() => startTransition(handlAddCategory)}
-                >
-                  Continue
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
         </SelectContent>
       </Select>
+
+      {/* Mover o AlertDialog para fora do SelectContent evita problemas de acessibilidade */}
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <button className="mt-2 text-sm text-blue-600 underline">
+            Adicionar nova categoria
+          </button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogDescription className="text-center">
+              Nova categoria
+            </AlertDialogDescription>
+            <Input
+              type="text"
+              placeholder="Nome da categoria"
+              className="w-full"
+              onChange={(e) => setNewCategory(e.target.value)}
+            />
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => startTransition(handleAddCategory)}
+            >
+              Adicionar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 };
