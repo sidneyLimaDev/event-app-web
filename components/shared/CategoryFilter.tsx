@@ -23,7 +23,9 @@ const CategoryFilter = () => {
     const getCategories = async () => {
       const categoryList = await getAllCategories();
 
-      categoryList && setCategories(categoryList as Category[]);
+      if (categoryList) {
+        setCategories(categoryList as Category[]);
+      }
     };
 
     getCategories();
@@ -51,7 +53,7 @@ const CategoryFilter = () => {
   return (
     <Select onValueChange={(value: string) => onSelectCategory(value)}>
       <SelectTrigger className="overflow-hidden rounded-full bg-gray-50 px-4 py-2 ">
-        <SelectValue placeholder="Category" />
+        <SelectValue placeholder="Categoria" />
       </SelectTrigger>
       <SelectContent>
         <SelectItem value="All" className="">

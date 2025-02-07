@@ -24,43 +24,41 @@ const Collection = ({
   urlParamName,
 }: CollectionProps) => {
   return (
-    console.log(collectionType),
-    (
-      <>
-        {data?.length > 0 ? (
-          <div className="flex flex-col items-center gap-10">
-            <ul className="grid w-full grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:gap-10">
-              {data.map((event) => {
-                const hasOrderLink = collectionType === "Events_Organized";
-                const hidePrice = collectionType === "My_Tickets";
+    /*  console.log(collectionType), */
+    <>
+      {data?.length > 0 ? (
+        <div className="flex flex-col items-center gap-10">
+          <ul className="grid w-full grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:gap-10">
+            {data.map((event) => {
+              const hasOrderLink = collectionType === "Events_Organized";
+              const hidePrice = collectionType === "My_Tickets";
 
-                return (
-                  <li key={event.id} className="flex justify-center">
-                    <Card
-                      event={event}
-                      hasOrderLink={hasOrderLink}
-                      hidePrice={hidePrice}
-                    />
-                  </li>
-                );
-              })}
-            </ul>
-            {totalPages > 1 && (
-              <Pagination
-                urlParamName={urlParamName}
-                page={page}
-                totalPages={totalPages}
-              />
-            )}
-          </div>
-        ) : (
-          <div className="flex justify-center flex-col items-center min-h-[200px] w-full gap-3 rounded-[14px] bg-gray-50 py-28 text-center">
-            <h3 className="font-bold">{emptyTitle}</h3>
-            <p>{emptyStateSubtext}</p>
-          </div>
-        )}
-      </>
-    )
+              return (
+                <li key={event.id} className="flex justify-center">
+                  <Card
+                    event={event}
+                    hasOrderLink={hasOrderLink}
+                    hidePrice={hidePrice}
+                  />
+                </li>
+              );
+            })}
+          </ul>
+          {totalPages > 1 && (
+            <Pagination
+              urlParamName={urlParamName}
+              page={page}
+              totalPages={totalPages}
+            />
+          )}
+        </div>
+      ) : (
+        <div className="flex justify-center flex-col items-center min-h-[200px] w-full gap-3 rounded-[14px] bg-gray-50 py-28 text-center">
+          <h3 className="font-bold">{emptyTitle}</h3>
+          <p>{emptyStateSubtext}</p>
+        </div>
+      )}
+    </>
   );
 };
 

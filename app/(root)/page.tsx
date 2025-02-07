@@ -16,28 +16,31 @@ export default async function Home({ searchParams }: SearchParamProps) {
     page: page,
   });
 
-  console.log("Page", events);
+  /*   console.log("Page", events); */
   return (
     <>
-      <section className="bg-primary-50">
-        <div className=" py-10">
+      <section className="bg-primary-50 flex justify-center">
+        <div className=" py-10 w-full max-w-screen-xl">
           <CarouselBanner />
         </div>
       </section>
-      <section id="events" className=" my-8">
-        <h2>Eventos</h2>
-        <div className="flex w-full flex-col gap-5 md:flex-row">
-          <Search /> <CategoryFilter />
+      <div></div>
+      <section id="events" className=" my-8 flex justify-center">
+        <div className="w-full max-w-screen-xl">
+          <h2>Eventos</h2>
+          <div className="flex w-full flex-col gap-5 md:flex-row">
+            <Search /> <CategoryFilter />
+          </div>
+          <Collection
+            data={events?.data}
+            emptyTitle="Nenhum evento encontrado"
+            emptyStateSubtext="Tente alterar os filtros"
+            collectionType="All_Events"
+            limit={3}
+            page={1}
+            totalPages={events?.totalPages}
+          />
         </div>
-        <Collection
-          data={events?.data}
-          emptyTitle="Nenhum evento encontrado"
-          emptyStateSubtext="Tente alterar os filtros"
-          collectionType="All_Events"
-          limit={3}
-          page={1}
-          totalPages={events?.totalPages}
-        />
       </section>
     </>
   );

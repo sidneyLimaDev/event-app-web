@@ -30,8 +30,8 @@ const EventDetails = async ({
     page: page as string,
   });
 
-  console.log(event);
-  console.log(event.imageUrl);
+  /*   console.log(event);
+  console.log(event.imageUrl); */
 
   return (
     <>

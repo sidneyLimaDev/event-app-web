@@ -279,3 +279,29 @@ export async function getEventsByUser({
     handleError(error);
   }
 }
+
+export const getEventsByCategory = async (category: string) => {
+  try {
+    const categoryData = await prisma.category.findUnique({
+      where: { name: category },
+    });
+
+    if (!categoryData) {
+      throw new Error("Category not found");
+    }
+
+    const events = await prisma.event.findMany({
+      where: { categoryId: categoryData.id },
+      orderBy: { createdAt: "desc" },
+      include: {
+        category: { select: { name: true } },
+        organizer: { select: { firstName: true, lastName: true } },
+      },
+    });
+
+    return JSON.parse(JSON.stringify(events));
+  } catch (error) {
+    console.log(JSON.stringify(error));
+    handleError(error);
+  }
+};

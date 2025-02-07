@@ -19,7 +19,7 @@ const Card = async ({ event, hasOrderLink, hidePrice }: CardProps) => {
 
   const isEventCreator = userId === event.organizerId.toString();
 
-  console.log("Card", event);
+  /* console.log("Card", event); */
   return (
     <div className="group relative w-full h-full max-w-[400px] bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg md:min-h-[438px]">
       <Link
@@ -33,6 +33,9 @@ const Card = async ({ event, hasOrderLink, hidePrice }: CardProps) => {
           height={500}
           className="w-full h-[250px] object-cover object-center"
         />
+        <span className="text-muted-foreground bg-orange-400 text-white py-2 px-4 rounded-tr-lg absolute -mt-10">
+          {event.category.name}
+        </span>
       </Link>
       {isEventCreator && !hidePrice && (
         <div className="flex flex-col absolute top-2 right-2 gap-2 rounded-xl bg-white p-2 shadow-sm transition-all text-blue-500">
@@ -43,21 +46,26 @@ const Card = async ({ event, hasOrderLink, hidePrice }: CardProps) => {
           <DeleteConfirmation eventId={event.id} />
         </div>
       )}
-      <div>
-        <h3>{event.title}</h3>
+      <div className="p-3">
+        <p className="text-blue-500 font-medium">
+          {formatDate(new Date(event.startDateTime), "dd MMM")} -{" "}
+          {formatDate(new Date(event.endDateTime), "dd MMM")}{" "}
+        </p>
+
+        <h3 className="text-lg font-medium">{event.title}</h3>
+        <p className="text-sm from-neutral-400">{event.description}</p>
+        <p className="text-xs from-neutral-400">{event.location}</p>
         {!hidePrice && (
           <div className="flex gap-2">
             <span className="bg-green-500/10 py-2 px-4 text-green-600 rounded-full">
-              {event.isFree ? "Gratuito" : `R$ ${event.price}`}
-            </span>
-            <span className="text-muted-foreground bg-gray-500/10 py-2 px-4 rounded-full">
-              {event.category.name}
+              {event.isFree
+                ? "Gratuito"
+                : `R$ ${parseInt(event.price).toFixed(2)}`}
             </span>
           </div>
         )}
-        <p>{formatDate(new Date(event.startDateTime), "dd/MM/yyyy")}</p>
+
         <div className="flex content-between">
-          <p className="">{event.description}</p>
           {hasOrderLink && (
             <Link href={`/orders?evenId=${event.id}`}>
               <p className="text-blue-500">Detalhes do pedido</p>
