@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from "../ui/button";
 import { Event } from "@prisma/client";
 
-const Checkout = ({ event, userId }: { event: Event; userId: string }) => {
+const Checkout = ({ event }: { event: Event }) => {
   const onCheckout = async () => {
     console.log("checkout");
   };
