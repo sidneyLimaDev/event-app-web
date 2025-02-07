@@ -21,7 +21,11 @@ export function CarouselBanner() {
   // Array com URLs das imagens
   const images = [
     {
-      url: "/assets/images/banner-evento1.avif",
+      url: "https://kh5qzrp39y.ufs.sh/f/1TIMouXnTebEu2ivQMk6aw6CltEfHVm8JjbuU0dvSFqpZ9Pc",
+      description: "Descrição da imagem 1",
+    },
+    {
+      url: "https://kh5qzrp39y.ufs.sh/f/1TIMouXnTebEHQQuMlaljaRpC6cPd9tqXmys3DUf5unvxKzY",
       description: "Descrição da imagem 1",
     },
   ];

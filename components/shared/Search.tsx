@@ -36,7 +36,7 @@ const Search = ({
   }, [query, searchParams, router]);
 
   return (
-    <div className="flex justofy-center items-center min-h-[54px] w-full overflow-hidden rounded-full bg-gray-50 px-4 py-2">
+    <div className="flex justify-center items-center min-h-[54px] w-full overflow-hidden rounded-full bg-gray-50 px-4 py-2 border-[1px] border-gray-200">
       <SearchIcon size={24} />
       <Input
         type="text"

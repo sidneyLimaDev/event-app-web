@@ -52,7 +52,7 @@ const CategoryFilter = () => {
 
   return (
     <Select onValueChange={(value: string) => onSelectCategory(value)}>
-      <SelectTrigger className="overflow-hidden rounded-full bg-gray-50 px-4 py-2 ">
+      <SelectTrigger className="overflow-hidden rounded-full bg-gray-50 px-4 py-2 min-h-[54px] ">
         <SelectValue placeholder="Categoria" />
       </SelectTrigger>
       <SelectContent>
