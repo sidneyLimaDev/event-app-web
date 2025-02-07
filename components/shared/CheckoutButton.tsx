@@ -1,6 +1,6 @@
 "use client";
 
-import { SignedOut, SignedIn, useUser } from "@clerk/nextjs";
+import { SignedOut, SignedIn } from "@clerk/nextjs";
 import { Event } from "@prisma/client";
 import React from "react";
 import { Button } from "../ui/button";
@@ -8,8 +8,8 @@ import Link from "next/link";
 import Checkout from "./Checkout";
 
 const CheckoutButton = ({ event }: { event: Event }) => {
-  const { user } = useUser();
-  const userId = user?.publicMetadata.userId as string;
+  /*   const { user } = useUser();
+  const userId = user?.publicMetadata.userId as string; */
   const hasEventFinished = new Date(event.endDateTime) < new Date();
 
   return (
@@ -25,7 +25,7 @@ const CheckoutButton = ({ event }: { event: Event }) => {
           </SignedOut>
 
           <SignedIn>
-            <Checkout event={event} userId={userId} />
+            <Checkout event={event} />
           </SignedIn>
         </>
       )}

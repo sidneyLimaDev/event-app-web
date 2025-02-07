@@ -3,44 +3,37 @@ import CategoryFilter from "@/components/shared/CategoryFilter";
 import Collection from "@/components/shared/Collection";
 import Search from "@/components/shared/Search";
 import { getAllEvents } from "@/lib/actions/event.actions";
-import { SearchParamProps } from "@/types";
 
-export default async function Home({ searchParams }: SearchParamProps) {
-  const page = Number(searchParams?.page) || 1;
-  const searchText = (searchParams?.query as string) || "";
-  const category = (searchParams?.category as string) || "";
+export default async function Home() {
   const events = await getAllEvents({
-    query: searchText,
-    category: category,
+    query: "",
+    category: "",
     limit: 6,
-    page: page,
+    page: 1,
   });
 
-  /*   console.log("Page", events); */
+  console.log("Page", events);
   return (
     <>
-      <section className="bg-primary-50 flex justify-center">
-        <div className=" py-10 w-full max-w-screen-xl">
+      <section className="bg-primary-50">
+        <div className=" py-10">
           <CarouselBanner />
         </div>
       </section>
-      <div></div>
-      <section id="events" className=" my-8 flex justify-center">
-        <div className="w-full max-w-screen-xl">
-          <h2>Eventos</h2>
-          <div className="flex w-full flex-col gap-5 md:flex-row">
-            <Search /> <CategoryFilter />
-          </div>
-          <Collection
-            data={events?.data}
-            emptyTitle="Nenhum evento encontrado"
-            emptyStateSubtext="Tente alterar os filtros"
-            collectionType="All_Events"
-            limit={3}
-            page={1}
-            totalPages={events?.totalPages}
-          />
+      <section id="events" className=" my-8">
+        <h2>Eventos</h2>
+        <div className="flex w-full flex-col gap-5 md:flex-row">
+          <Search /> <CategoryFilter />
         </div>
+        <Collection
+          data={events?.data}
+          emptyTitle="Nenhum evento encontrado"
+          emptyStateSubtext="Tente alterar os filtros"
+          collectionType="All_Events"
+          limit={6}
+          page={1}
+          totalPages={2}
+        />
       </section>
     </>
   );
