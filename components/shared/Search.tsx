@@ -1,22 +1,24 @@
 "use client";
-import { SearchIcon } from "lucide-react";
+
 import { useEffect, useState } from "react";
 import { Input } from "../ui/input";
 import { formUrlQuery, removeKeysFromQuery } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
+import { SearchIcon } from "lucide-react";
 
 const Search = ({
-  placeholder = "Pesquise por um evento",
+  placeholder = "Pesquise aqui",
 }: {
   placeholder?: string;
 }) => {
   const [query, setQuery] = useState("");
   const router = useRouter();
-  const searchParams = useSearchParams;
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       let newUrl = "";
+
       if (query) {
         newUrl = formUrlQuery({
           params: searchParams.toString(),
@@ -29,6 +31,7 @@ const Search = ({
           keysToRemove: ["query"],
         });
       }
+
       router.push(newUrl, { scroll: false });
     }, 300);
 
