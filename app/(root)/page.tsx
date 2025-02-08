@@ -7,18 +7,21 @@ import { getAllEvents } from "@/lib/actions/event.actions";
 import { SearchParamProps } from "@/types";
 
 export default async function Home({ searchParams }: SearchParamProps) {
-  const page = Number(searchParams?.page) || 1;
-  const searchText = (searchParams?.query as string) || "";
-  const category = (searchParams?.category as string) || "";
+  // Aguarde os parâmetros de busca antes de usá-los
+  const { page = "1", query = "", category = "" } = (await searchParams) || {};
+
+  // Converta os parâmetros
+  const pageNumber = Number(page) || 1;
+  const searchText = query as string;
+  const categoryText = category as string;
 
   const events = await getAllEvents({
     query: searchText,
-    category,
-    page,
+    category: categoryText,
+    page: pageNumber,
     limit: 6,
   });
 
-  console.log("Page", events);
   return (
     <>
       <section className="bg-primary-50 flex justify-center">
